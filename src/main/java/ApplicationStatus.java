@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
  * @author Gregor Gottschewski
  */
 @ApplicationScoped
-public class Status {
+public class ApplicationStatus {
     private boolean available;
 
     @PostConstruct
