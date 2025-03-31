@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.bxdlove.worktimeserver.io.ApplicationDirectories.APPLICATION_HOME;
 
-@WebListener(value = "Application com.bxdlove.worktimeserver.startup")
+@WebListener(value = "Application startup")
 public class ApplicationStartup implements ServletContextListener {
 
     @Inject
@@ -70,7 +70,6 @@ public class ApplicationStartup implements ServletContextListener {
                     try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
                         MongoDatabase database = mongoClient.getDatabase("admin");
                         database.runCommand(new Document("ping", 1));
-                        System.out.println("MongoDB is running");
                     } catch (Exception e) {
                         status.addException(new SetupException(this, e.getMessage()));
                     }
