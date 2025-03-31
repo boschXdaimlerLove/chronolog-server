@@ -1,6 +1,6 @@
-package startup;
+package com.bxdlove.worktimeserver.startup;
 
-import api.Status;
+import com.bxdlove.worktimeserver.api.Status;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -8,17 +8,17 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import startup.setup.InitStep;
-import startup.setup.SetupException;
+import com.bxdlove.worktimeserver.startup.setup.InitStep;
+import com.bxdlove.worktimeserver.startup.setup.SetupException;
 import org.bson.Document;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static io.ApplicationDirectories.APPLICATION_HOME;
+import static com.bxdlove.worktimeserver.io.ApplicationDirectories.APPLICATION_HOME;
 
-@WebListener(value = "Application startup")
+@WebListener(value = "Application com.bxdlove.worktimeserver.startup")
 public class ApplicationStartup implements ServletContextListener {
 
     @Inject

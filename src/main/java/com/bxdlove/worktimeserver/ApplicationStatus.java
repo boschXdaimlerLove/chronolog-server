@@ -1,3 +1,5 @@
+package com.bxdlove.worktimeserver;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 

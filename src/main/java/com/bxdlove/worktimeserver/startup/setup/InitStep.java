@@ -1,4 +1,4 @@
-package startup.setup;
+package com.bxdlove.worktimeserver.startup.setup;
 
 /**
  * Interface for application initialization steps.

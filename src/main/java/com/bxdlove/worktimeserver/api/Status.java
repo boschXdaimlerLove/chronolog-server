@@ -1,4 +1,4 @@
-package api;
+package com.bxdlove.worktimeserver.api;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -7,7 +7,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import startup.setup.SetupException;
+import com.bxdlove.worktimeserver.startup.setup.SetupException;
 
 import java.util.Stack;
 
