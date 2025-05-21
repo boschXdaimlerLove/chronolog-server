@@ -13,6 +13,7 @@ public class Main extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(Status.class);
+        classes.add(ApplicationIdentityStore.class);
         //classes.add(ApplicationStartup.class);
         return classes;
     }
