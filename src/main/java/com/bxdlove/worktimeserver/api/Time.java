@@ -20,11 +20,6 @@ import java.util.List;
 /**
  * This class handles employee time entries.
  * It provides the following endpoints:
- * <ol>
- *     <li>POST /time/{employee_mail} - Stamp in for an employee</li>
- *     <li>GET /time/{employee_mail}?range_start={range_start}&range_end={range_end} - Get time entries for an employee between two dates</li>
- *     <li>PATCH /time/{employee_mail} - Stamp out for an employee</li>
- * </ol>
  */
 @BasicAuthenticationMechanismDefinition(
         realmName = "worktime"
@@ -89,12 +84,13 @@ public class Time {
         }
 
         try (MongoClient mongoclient = MongoClients.create("mongodb://localhost:27017")) {
-            if (getUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName()) == null) {
+            Document userTimeStampEntry = getUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName());
+            if (userTimeStampEntry == null) {
                 return ResponseMessages.NO_ACTIVE_TIME_FRAME.getResponseBuilder().build();
             }
 
             mongoclient.getDatabase("worktime_server").getCollection("time_frame").updateOne(
-                    new Document("employee_mail", securityContext.getUserPrincipal().getName()).append("_id", getUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName()).get("_id")),
+                    new Document("employee_mail", securityContext.getUserPrincipal().getName()).append("_id", userTimeStampEntry.get("_id")),
                     new Document("$set", new Document("end", LocalDateTime.now()))
             );
         } catch (MongoException e) {
@@ -129,8 +125,8 @@ public class Time {
             for (TimeObject timeObject : timeObjects) {
                 mongoclient.getDatabase("worktime_server").getCollection("time_frame").insertOne(
                         new Document("employee_mail", securityContext.getUserPrincipal().getName())
-                                .append("start", timeObject.getStart().toLocalDateTime())
-                                .append("end", timeObject.getEnd().toLocalDateTime())
+                                .append("start", timeObject.getStart().toInstant())
+                                .append("end", timeObject.getEnd().toInstant())
                                 .append("status", "open"));
             }
         } catch (MongoException e) {
