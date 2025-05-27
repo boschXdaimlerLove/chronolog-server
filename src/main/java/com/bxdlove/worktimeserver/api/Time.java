@@ -5,7 +5,9 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.json.*;
 import jakarta.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
@@ -14,8 +16,10 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import org.bson.Document;
 
-import java.time.LocalDateTime;
+import java.time.*;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * This class handles employee time entries.
@@ -84,7 +88,7 @@ public class Time {
         }
 
         try (MongoClient mongoclient = MongoClients.create("mongodb://localhost:27017")) {
-            Document userTimeStampEntry = getUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName());
+            Document userTimeStampEntry = getCurrentUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName());
             if (userTimeStampEntry == null) {
                 return ResponseMessages.NO_ACTIVE_TIME_FRAME.getResponseBuilder().build();
             }
@@ -136,6 +140,102 @@ public class Time {
         return Response.ok().build();
     }
 
+    @GET
+    public Response getAllTimes(
+            @Context SecurityContext securityContext
+    ) {
+        if (securityContext.getUserPrincipal() == null) {
+            return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
+        }
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+            mongoClient.getDatabase("worktime_server").getCollection("time_frame").find(
+                    Filters.eq("employee_mail", securityContext.getUserPrincipal().getName())
+            ).forEach(document -> {
+                JsonObjectBuilder timeObject = Json.createObjectBuilder();
+                timeObject.add("start", document.get("start", Date.class).toInstant().toString());
+                timeObject.add("end", document.get("end", Date.class).toInstant().toString());
+                arrayBuilder.add(timeObject.build());
+            });
+        } catch (MongoException e) {
+            return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
+        }
+
+        return Response.ok(arrayBuilder.build()).build();
+    }
+
+    @GET
+    @Path("/status")
+    public Response getStatus(
+            @Context SecurityContext securityContext
+    ) {
+        if (securityContext.getUserPrincipal() == null) {
+            return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
+        }
+
+        TimeStatusCode timeStatusCode = TimeStatusCode.OK;
+
+        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+            Document userTimeStampEntry = getCurrentUserTimestampEntry(mongoClient, securityContext.getUserPrincipal().getName());
+            if (userTimeStampEntry == null) {
+                return Response.ok(TimeStatusCode.NOT_LOGGED_IN.getReturnCode()).build();
+            }
+
+            if (LocalDateTime.now().getDayOfWeek() == DayOfWeek.SUNDAY) {
+                return Response.ok(TimeStatusCode.HOLIDAY.getReturnCode()).build();
+            }
+
+            Instant stampInTime = userTimeStampEntry.get("start", Instant.class);
+            LocalTime localTime = stampInTime.atZone(TimeZone.getDefault().toZoneId()).toLocalTime();
+            Document lastStampEntry = getLastStampEntry(mongoClient);
+
+            if (lastStampEntry == null) {
+                return Response.ok(timeStatusCode.getReturnCode()).build();
+            }
+
+            if (localTime.isAfter(LocalTime.of(22,0)) && localTime.isBefore(LocalTime.of(6, 0))) {
+                return Response.ok(TimeStatusCode.OUTSIDE_CORE_WORKING_HOURS.getReturnCode()).build();
+            }
+
+            if (isMinor(mongoClient, securityContext.getUserPrincipal().getName())) {
+                return Response.ok(handleMinor(stampInTime).getReturnCode()).build();
+            }
+
+            if (Duration.between(stampInTime, LocalDateTime.now()).toHours() >= 6) {
+                return Response.ok(TimeStatusCode.BREAK_NEEDED.getReturnCode()).build();
+            }
+
+        } catch (MongoException e) {
+            return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
+        }
+
+        return Response.ok(timeStatusCode.getReturnCode()).build();
+    }
+
+    private boolean isMinor(MongoClient mongoClient, String user) {
+        boolean b = false;
+
+        Document document = mongoClient.getDatabase("worktime_server").getCollection("employee").find(
+                Filters.eq("email", user)
+        ).first();
+
+        if (document != null) {
+            b = document.get("is_minor", Boolean.class);
+        }
+
+        return b;
+    }
+
+    private TimeStatusCode handleMinor(Instant stampInTime) {
+        if (Duration.between(stampInTime, LocalDateTime.now()).toHours() > 6) {
+            return TimeStatusCode.BREAK_NEEDED;
+        }
+
+        return TimeStatusCode.OK;
+    }
+
     /**
      * Get time frame of specified user.
      *
@@ -143,13 +243,22 @@ public class Time {
      * @param username username to get time frame for
      * @return time frame entry or {@code null} if not found
      */
-    private Document getUserTimestampEntry(MongoClient mongoClient, String username) {
+    private Document getCurrentUserTimestampEntry(MongoClient mongoClient, String username) {
         return mongoClient.getDatabase("worktime_server").getCollection("time_frame").find(
                 Filters.and(
                         Filters.exists("end", false),
                         Filters.eq("employee_mail", username)
                 )
         ).first();
+    }
+
+    private Document getLastStampEntry(MongoClient mongoClient) {
+        return mongoClient.getDatabase("worktime_server")
+                .getCollection("time_frame")
+                .find()
+                .sort(Sorts.descending("end"))
+                .limit(1)
+                .first();
     }
 
     /**
@@ -160,6 +269,6 @@ public class Time {
      * @return {@code true} if the employee is already checked in, {@code false} otherwise.
      */
     private boolean userAlreadyCheckedIn(MongoClient mongoClient, String username) {
-        return getUserTimestampEntry(mongoClient, username) != null;
+        return getCurrentUserTimestampEntry(mongoClient, username) != null;
     }
 }
