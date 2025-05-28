@@ -19,6 +19,7 @@ import org.bson.Document;
 import java.time.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -140,6 +141,17 @@ public class Time {
         return Response.ok().build();
     }
 
+    /**
+     * Receive all time frames of user.
+     *
+     * @param securityContext provides secruity-related context
+     * @return a response indicating the result of the operation:
+     * <ul>
+     *     <li>{@link ResponseMessages#UNAUTHORIZED}: Wrong login credentials</li>
+     *     <li>{@link ResponseMessages#DATABASE_ERROR}: Error with the database</li>
+     *     <li>{@link Response#ok()}: Contains all times</li>
+     * </ul>
+     */
     @GET
     public Response getAllTimes(
             @Context SecurityContext securityContext
@@ -154,10 +166,10 @@ public class Time {
             mongoClient.getDatabase("worktime_server").getCollection("time_frame").find(
                     Filters.eq("employee_mail", securityContext.getUserPrincipal().getName())
             ).forEach(document -> {
-                JsonObjectBuilder timeObject = Json.createObjectBuilder();
-                timeObject.add("start", document.get("start", Date.class).toInstant().toString());
-                timeObject.add("end", document.get("end", Date.class).toInstant().toString());
-                arrayBuilder.add(timeObject.build());
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("start", document.get("start", Date.class).toInstant().toString())
+                        .add("end", Objects.requireNonNullElse(document.get("end", Date.class), Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())).toInstant().toString()).build()
+                );
             });
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
@@ -252,10 +264,14 @@ public class Time {
         ).first();
     }
 
-    private Document getLastStampEntry(MongoClient mongoClient) {
+    /**
+     * @param mongoClient database client.
+     * @return last stamp entry of specified user.
+     */
+    private Document getLastStampEntry(MongoClient mongoClient, String username) {
         return mongoClient.getDatabase("worktime_server")
                 .getCollection("time_frame")
-                .find()
+                .find(Filters.eq("email", username))
                 .sort(Sorts.descending("end"))
                 .limit(1)
                 .first();
