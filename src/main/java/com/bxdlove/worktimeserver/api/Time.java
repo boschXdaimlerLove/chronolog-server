@@ -165,12 +165,10 @@ public class Time {
         try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
             mongoClient.getDatabase("worktime_server").getCollection("time_frame").find(
                     Filters.eq("employee_mail", securityContext.getUserPrincipal().getName())
-            ).forEach(document -> {
-                arrayBuilder.add(Json.createObjectBuilder()
-                        .add("start", document.get("start", Date.class).toInstant().toString())
-                        .add("end", Objects.requireNonNullElse(document.get("end", Date.class), Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())).toInstant().toString()).build()
-                );
-            });
+            ).forEach(document -> arrayBuilder.add(Json.createObjectBuilder()
+                    .add("start", document.get("start", Date.class).toInstant().toString())
+                    .add("end", Objects.requireNonNullElse(document.get("end", Date.class), Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())).toInstant().toString()).build()
+            ));
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
@@ -187,27 +185,25 @@ public class Time {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        TimeStatusCode timeStatusCode = TimeStatusCode.OK;
-
         try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
             Document userTimeStampEntry = getCurrentUserTimestampEntry(mongoClient, securityContext.getUserPrincipal().getName());
             if (userTimeStampEntry == null) {
                 return Response.ok(TimeStatusCode.NOT_LOGGED_IN.getReturnCode()).build();
             }
 
-            if (LocalDateTime.now().getDayOfWeek() == DayOfWeek.SUNDAY) {
+            if (isHoliday()) {
                 return Response.ok(TimeStatusCode.HOLIDAY.getReturnCode()).build();
             }
 
-            Instant stampInTime = userTimeStampEntry.get("start", Instant.class);
-            LocalTime localTime = stampInTime.atZone(TimeZone.getDefault().toZoneId()).toLocalTime();
-            Document lastStampEntry = getLastStampEntry(mongoClient);
+            Instant stampInTime = userTimeStampEntry.get("start", Date.class).toInstant();
+            LocalDateTime localStampInDateTime = stampInTime.atZone(TimeZone.getDefault().toZoneId()).toLocalDateTime();
+            Document lastStampEntry = getLastStampEntry(mongoClient, securityContext.getUserPrincipal().getName());
 
             if (lastStampEntry == null) {
-                return Response.ok(timeStatusCode.getReturnCode()).build();
+                return Response.ok(TimeStatusCode.OK).build();
             }
 
-            if (localTime.isAfter(LocalTime.of(22,0)) && localTime.isBefore(LocalTime.of(6, 0))) {
+            if (!isCoreWorkingHours(localStampInDateTime.toLocalTime())) {
                 return Response.ok(TimeStatusCode.OUTSIDE_CORE_WORKING_HOURS.getReturnCode()).build();
             }
 
@@ -215,15 +211,26 @@ public class Time {
                 return Response.ok(handleMinor(stampInTime).getReturnCode()).build();
             }
 
-            if (Duration.between(stampInTime, LocalDateTime.now()).toHours() >= 6) {
+            if (breakNeeded(stampInTime)) {
                 return Response.ok(TimeStatusCode.BREAK_NEEDED.getReturnCode()).build();
             }
-
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
 
-        return Response.ok(timeStatusCode.getReturnCode()).build();
+        return Response.ok(TimeStatusCode.OK).build();
+    }
+
+    private boolean isHoliday() {
+        return LocalDateTime.now().getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    private boolean isCoreWorkingHours(LocalTime localStampInTime) {
+        return localStampInTime.isBefore(LocalTime.of(22,0)) && localStampInTime.isAfter(LocalTime.of(6, 0));
+    }
+
+    private boolean breakNeeded(Instant stampIn) {
+        return Duration.between(stampIn, LocalDateTime.now()).toHours() >= 6;
     }
 
     private boolean isMinor(MongoClient mongoClient, String user) {
