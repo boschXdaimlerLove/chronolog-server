@@ -27,15 +27,13 @@ public class EmployeeAdminUtils {
             mongoClient.getDatabase("worktime_server")
                     .getCollection("employee")
                     .find()
-                    .forEach(entry -> {
-                        employees.add(new Employee(entry.get("_id", ObjectId.class).toString(),
-                                entry.get("birthday", Date.class),
-                                entry.get("email", String.class),
-                                entry.get("first_name", String.class),
-                                entry.get("password", String.class),
-                                entry.get("second_name", String.class),
-                                entry.get("weekly_hours", Integer.class)));
-                    });
+                    .forEach(entry -> employees.add(new Employee(entry.get("_id", ObjectId.class).toString(),
+                            entry.get("birthday", Date.class),
+                            entry.get("email", String.class),
+                            entry.get("first_name", String.class),
+                            entry.get("password", String.class),
+                            entry.get("second_name", String.class),
+                            entry.get("weekly_hours", Integer.class))));
         }
 
         return employees;
