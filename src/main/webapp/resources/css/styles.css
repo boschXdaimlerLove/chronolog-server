@@ -1,0 +1,298 @@
+/* Modern CSS with rounded buttons and improved design */
+:root {
+    --primary-color: #4285f4;
+    --primary-dark: #3367d6;
+    --secondary-color: #34a853;
+    --secondary-dark: #2e7d32;
+    --danger-color: #ea4335;
+    --danger-dark: #c62828;
+    --warning-color: #fbbc05;
+    --warning-dark: #f57f17;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #757575;
+    --text-color: #333333;
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.15);
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+}
+
+/* Base styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header styles */
+.header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: box-shadow var(--transition-speed);
+}
+
+.header:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.header h1 {
+    margin: 0;
+    padding: 0 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Content area */
+.content {
+    background-color: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: box-shadow var(--transition-speed);
+}
+
+.content:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.content h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--medium-gray);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Footer styles */
+.footer {
+    text-align: center;
+    margin-top: 25px;
+    padding: 15px;
+    color: var(--dark-gray);
+    font-size: 0.9em;
+    border-top: 1px solid var(--medium-gray);
+}
+
+/* Button styles */
+.action-buttons {
+    margin: 25px 0;
+}
+
+/* Override PrimeFaces button styles */
+.ui-button, 
+button.ui-button.ui-state-default, 
+.ui-button.ui-state-default {
+    border-radius: 50px !important;
+    padding: 10px 20px !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    transition: all var(--transition-speed) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: none !important;
+}
+
+.ui-button:hover, 
+button.ui-button.ui-state-default:hover, 
+.ui-button.ui-state-default:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.ui-button:active, 
+button.ui-button.ui-state-default:active, 
+.ui-button.ui-state-default:active {
+    transform: translateY(0) !important;
+}
+
+.ui-button .ui-icon {
+    margin-right: 8px !important;
+}
+
+/* Button colors */
+.ui-button-success {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
+}
+
+.ui-button-success:hover {
+    background-color: var(--secondary-dark) !important;
+}
+
+.ui-button-secondary {
+    background-color: var(--dark-gray) !important;
+    color: white !important;
+}
+
+.ui-button-secondary:hover {
+    background-color: #616161 !important;
+}
+
+.ui-button-danger {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+}
+
+.ui-button-danger:hover {
+    background-color: var(--danger-dark) !important;
+}
+
+.ui-button-warning {
+    background-color: var(--warning-color) !important;
+    color: white !important;
+}
+
+.ui-button-warning:hover {
+    background-color: var(--warning-dark) !important;
+}
+
+/* Form styles */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.field {
+    margin-bottom: 25px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+/* Input styles */
+.ui-inputtext, 
+.ui-inputnumber, 
+.ui-password, 
+.ui-calendar input {
+    width: 100% !important;
+    padding: 12px !important;
+    border-radius: var(--border-radius) !important;
+    border: 1px solid var(--medium-gray) !important;
+    transition: all var(--transition-speed) !important;
+    box-shadow: none !important;
+}
+
+.ui-inputtext:focus, 
+.ui-inputnumber:focus, 
+.ui-password:focus, 
+.ui-calendar input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.25) !important;
+}
+
+/* Panel styles */
+.ui-panel {
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: none !important;
+}
+
+.ui-panel .ui-panel-titlebar {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+}
+
+/* DataTable styles */
+.ui-datatable {
+    border-radius: var(--border-radius) !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.ui-datatable .ui-datatable-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    padding: 15px !important;
+    font-weight: 500 !important;
+    border: none !important;
+}
+
+.ui-datatable th {
+    background-color: #f8f9fa !important;
+    color: var(--primary-dark) !important;
+    padding: 12px !important;
+    border-color: var(--medium-gray) !important;
+}
+
+.ui-datatable-odd {
+    background-color: #f8f9fa !important;
+}
+
+.ui-datatable-even {
+    background-color: white !important;
+}
+
+.ui-datatable tr:hover {
+    background-color: rgba(66, 133, 244, 0.05) !important;
+}
+
+/* Paginator styles */
+.ui-paginator {
+    background-color: #f8f9fa !important;
+    padding: 10px !important;
+    border-color: var(--medium-gray) !important;
+}
+
+.ui-paginator .ui-paginator-page {
+    border-radius: 50% !important;
+    transition: all var(--transition-speed) !important;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Message styles */
+.ui-message {
+    border-radius: var(--border-radius) !important;
+    margin-top: 5px !important;
+}
+
+/* Button container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 35px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .button-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .button-container .ui-button {
+        width: 100%;
+    }
+}
