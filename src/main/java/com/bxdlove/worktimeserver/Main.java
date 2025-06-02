@@ -2,6 +2,7 @@ package com.bxdlove.worktimeserver;
 
 import com.bxdlove.worktimeserver.api.Status;
 import com.bxdlove.worktimeserver.api.Time;
+import com.bxdlove.worktimeserver.api.UserSettings;
 import com.bxdlove.worktimeserver.api.security.ApplicationIdentityStore;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -17,6 +18,7 @@ public class Main extends Application {
         classes.add(Status.class);
         classes.add(Time.class);
         classes.add(ApplicationIdentityStore.class);
+        classes.add(UserSettings.class);
         //classes.add(ApplicationStartup.class);
         return classes;
     }
