@@ -42,6 +42,7 @@ public class Time {
      *      <li>{@link ResponseMessages#UNAUTHORIZED}: Wrong login credentials</li>
      *      <li>{@link ResponseMessages#DATABASE_ERROR}: Error with the database</li>
      *      <li>{@link ResponseMessages#ALREADY_CHECKED_IN}: User already checked in before</li>
+     *      <li>{@link Response#ok()}: With stamp in time on server</li>
      *  </ul>
      */
     @POST
@@ -56,16 +57,18 @@ public class Time {
                 return ResponseMessages.ALREADY_CHECKED_IN.getResponseBuilder().build();
             }
 
+            LocalDateTime stampInTime = LocalDateTime.now();
+
             mongoclient.getDatabase("worktime_server").getCollection("time_frame").insertOne(
                     new Document("employee_mail", securityContext.getUserPrincipal().getName())
-                            .append("start", LocalDateTime.now())
+                            .append("start", stampInTime)
                             .append("status", "open")
             );
+
+            return Response.ok(Instant.from(stampInTime)).build();
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
-
-        return Response.ok().build();
     }
 
     /**
@@ -77,6 +80,7 @@ public class Time {
      *      <li>{@link ResponseMessages#UNAUTHORIZED}: Wrong login credentials</li>
      *      <li>{@link ResponseMessages#DATABASE_ERROR}: Error with the database</li>
      *      <li>{@link ResponseMessages#NO_ACTIVE_TIME_FRAME}: User is not stamped in</li>
+     *      <li>{@link Response#ok()}: With stamp out time on server</li>
      *  </ul>
      */
     @POST
@@ -94,15 +98,17 @@ public class Time {
                 return ResponseMessages.NO_ACTIVE_TIME_FRAME.getResponseBuilder().build();
             }
 
+            LocalDateTime stampOutTime = LocalDateTime.now();
+
             mongoclient.getDatabase("worktime_server").getCollection("time_frame").updateOne(
                     new Document("employee_mail", securityContext.getUserPrincipal().getName()).append("_id", userTimeStampEntry.get("_id")),
-                    new Document("$set", new Document("end", LocalDateTime.now()))
+                    new Document("$set", new Document("end", stampOutTime))
             );
+
+            return Response.ok(Instant.from(stampOutTime)).build();
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
-
-        return Response.ok().build();
     }
 
     /**
