@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
 <h:head>
     <title>Create Employee</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -40,7 +39,7 @@
 
                         <div class="field">
                             <p:outputLabel for="birthdayPicker">Birthday:</p:outputLabel>
-                            <p:datePicker id="birthdayPicker" monthNavigator="true" yearNavigator="true" showWeek="true" 
+                            <p:datePicker id="birthdayPicker" monthNavigator="true" yearNavigator="true"
                                          required="true" value="#{createEmployeeBean.employee.birthday}"/>
                             <p:message for="birthdayPicker" />
                         </div>
@@ -53,15 +52,15 @@
 
                         <div class="field">
                             <p:outputLabel for="weeklyHoursInput">Weekly Hours:</p:outputLabel>
-                            <p:inputNumber id="weeklyHoursInput" required="true" value="#{createEmployeeBean.employee.weeklyHours}" 
-                                         minValue="0" maxValue="168" decimalPlaces="0"/>
+                            <p:inputNumber id="weeklyHoursInput" required="true" value="#{createEmployeeBean.employee.weeklyHours}"
+                                         minValue="0" maxValue="80" decimalPlaces="0"/>
                             <p:message for="weeklyHoursInput" />
                         </div>
 
                         <div class="field">
                             <p:outputLabel for="passwordPicker">Password:</p:outputLabel>
                             <p:password id="passwordPicker" feedback="true" required="true" toggleMask="true"
-                                      promptLabel="Please enter a password" weakLabel="Weak" goodLabel="Good" strongLabel="Strong"
+                                      promptLabel="Please enter a password"
                                       value="#{createEmployeeBean.employee.password}"/>
                             <p:message for="passwordPicker" />
                         </div>
@@ -75,10 +74,6 @@
                     </p:panel>
                 </h:form>
             </div>
-        </div>
-
-        <div class="footer">
-            <p>ChronoLog Employee Management System © 2023</p>
         </div>
     </div>
 </h:body>
