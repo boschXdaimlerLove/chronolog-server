@@ -65,7 +65,7 @@ public class Time {
                             .append("status", "open")
             );
 
-            return Response.ok(Instant.from(stampInTime)).build();
+            return Response.ok(stampInTime.toInstant(ZoneOffset.UTC).toString()).build();
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
@@ -105,7 +105,7 @@ public class Time {
                     new Document("$set", new Document("end", stampOutTime))
             );
 
-            return Response.ok(Instant.from(stampOutTime)).build();
+            return Response.ok(stampOutTime.toInstant(ZoneOffset.UTC).toString()).build();
         } catch (MongoException e) {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
@@ -224,7 +224,7 @@ public class Time {
             return ResponseMessages.DATABASE_ERROR.getResponseBuilder().build();
         }
 
-        return Response.ok(TimeStatusCode.OK).build();
+        return Response.ok(TimeStatusCode.OK.getReturnCode()).build();
     }
 
     private boolean isHoliday() {
@@ -247,7 +247,7 @@ public class Time {
         ).first();
 
         if (document != null) {
-            b = document.get("is_minor", Boolean.class);
+            b = document.get("birthday", Instant.class).isAfter(LocalDateTime.now().minusYears(18).toInstant(ZoneOffset.UTC));
         }
 
         return b;
