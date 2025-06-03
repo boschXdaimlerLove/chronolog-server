@@ -1,0 +1,35 @@
+package com.bxdlove.worktimeserver.beans;
+
+import com.bxdlove.worktimeserver.base.Employee;
+import com.bxdlove.worktimeserver.utils.EmployeeAdminUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+@Named
+@RequestScoped
+public class CreateEmployeeBean {
+    @Inject
+    EmployeeDataBean employeeDataBean;
+
+    private Employee employee;
+
+    @PostConstruct
+    public void init() {
+        employee = new Employee();
+    }
+
+    public void createEmployee() {
+        EmployeeAdminUtils.createEmployee(employee);
+        employeeDataBean.getEmployees().add(employee);
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Employee Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+    <div class="container">
+        <div class="header">
+            <h1>ChronoLog Administrator Panel</h1>
+        </div>
+
+        <div class="content">
+            <h2>Employee Dashboard</h2>
+
+            <div class="action-buttons">
+                <h:form>
+                    <p:commandButton value="Create New Employee" action="create-employee?faces-redirect=true" icon="pi pi-plus" styleClass="ui-button-success" style="margin-right: 10px;"/>
+                    <p:commandButton value="Refresh" update="employeesTableForm" icon="pi pi-refresh" styleClass="ui-button-secondary"/>
+                </h:form>
+            </div>
+
+            <h:form id="employeesTableForm">
+                <p:dataTable id="employeesTableDataTable" 
+                             value="#{employeeDataBean.employees}"
+                             var="employee"
+                             stickyHeader="true"
+                             emptyMessage="No employees found"
+                             paginator="true"
+                             rows="10"
+                             rowsPerPageTemplate="5,10,15,50,100"
+                             styleClass="ui-datatable-striped">
+
+                    <p:column headerText="E-Mail" sortBy="#{employee.email}" filterBy="#{employee.email}">
+                        <h:outputText value="#{employee.email}" />
+                    </p:column>
+
+                    <p:column headerText="Birthday">
+                        <p:datePicker disabled="true" value="#{employee.birthday}" />
+                    </p:column>
+
+                    <p:column headerText="First Name" sortBy="#{employee.firstName}" filterBy="#{employee.firstName}">
+                        <h:outputText value="#{employee.firstName}" />
+                    </p:column>
+
+                    <p:column headerText="Last Name" sortBy="#{employee.secondName}" filterBy="#{employee.secondName}">
+                        <h:outputText value="#{employee.secondName}" />
+                    </p:column>
+
+                    <p:column headerText="Weekly Hours">
+                        <h:outputText value="#{employee.weeklyHours}" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

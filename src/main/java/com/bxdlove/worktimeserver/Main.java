@@ -4,6 +4,7 @@ import com.bxdlove.worktimeserver.api.Status;
 import com.bxdlove.worktimeserver.api.Time;
 import com.bxdlove.worktimeserver.api.UserSettings;
 import com.bxdlove.worktimeserver.api.security.ApplicationIdentityStore;
+import com.bxdlove.worktimeserver.beans.EmployeeDataBean;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
@@ -20,6 +21,7 @@ public class Main extends Application {
         classes.add(ApplicationIdentityStore.class);
         classes.add(UserSettings.class);
         //classes.add(ApplicationStartup.class);
+        classes.add(EmployeeDataBean.class);
         return classes;
     }
 }

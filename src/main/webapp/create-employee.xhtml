@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Create Employee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="styles.css" />
+</h:head>
+<h:body>
+    <div class="container">
+        <div class="header">
+            <h1>ChronoLog Administrator Panel</h1>
+        </div>
+
+        <div class="content">
+            <h2>Create New Employee</h2>
+
+            <div class="action-buttons">
+                <h:form>
+                    <p:commandButton value="Back to Dashboard" action="dashboard?faces-redirect=true" icon="pi pi-arrow-left" styleClass="ui-button-secondary"/>
+                </h:form>
+            </div>
+
+            <div class="form-container">
+                <h:form id="employeeCreatorForm">
+                    <p:panel>
+                        <div class="field">
+                            <p:outputLabel for="firstNameInput">First name:</p:outputLabel>
+                            <p:inputText id="firstNameInput" required="true" value="#{createEmployeeBean.employee.firstName}"/>
+                            <p:message for="firstNameInput" />
+                        </div>
+
+                        <div class="field">
+                            <p:outputLabel for="secondNameInput">Last name:</p:outputLabel>
+                            <p:inputText id="secondNameInput" required="true" value="#{createEmployeeBean.employee.secondName}"/>
+                            <p:message for="secondNameInput" />
+                        </div>
+
+                        <div class="field">
+                            <p:outputLabel for="birthdayPicker">Birthday:</p:outputLabel>
+                            <p:datePicker id="birthdayPicker" monthNavigator="true" yearNavigator="true"
+                                         required="true" value="#{createEmployeeBean.employee.birthday}"/>
+                            <p:message for="birthdayPicker" />
+                        </div>
+
+                        <div class="field">
+                            <p:outputLabel for="emailInput">E-Mail:</p:outputLabel>
+                            <p:inputText id="emailInput" type="email" required="true" value="#{createEmployeeBean.employee.email}"/>
+                            <p:message for="emailInput" />
+                        </div>
+
+                        <div class="field">
+                            <p:outputLabel for="weeklyHoursInput">Weekly Hours:</p:outputLabel>
+                            <p:inputNumber id="weeklyHoursInput" required="true" value="#{createEmployeeBean.employee.weeklyHours}"
+                                         minValue="0" maxValue="80" decimalPlaces="0"/>
+                            <p:message for="weeklyHoursInput" />
+                        </div>
+
+                        <div class="field">
+                            <p:outputLabel for="passwordPicker">Password:</p:outputLabel>
+                            <p:password id="passwordPicker" feedback="true" required="true" toggleMask="true"
+                                      promptLabel="Please enter a password"
+                                      value="#{createEmployeeBean.employee.password}"/>
+                            <p:message for="passwordPicker" />
+                        </div>
+
+                        <div class="button-container">
+                            <p:commandButton value="Cancel" action="dashboard?faces-redirect=true" immediate="true" 
+                                           icon="pi pi-times" styleClass="ui-button-secondary"/>
+                            <p:commandButton value="Create Employee" action="#{createEmployeeBean.createEmployee}" 
+                                           update="employeeCreatorForm" icon="pi pi-check" styleClass="ui-button-success"/>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>
