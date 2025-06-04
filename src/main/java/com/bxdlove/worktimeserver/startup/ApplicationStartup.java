@@ -12,10 +12,13 @@ import com.bxdlove.worktimeserver.startup.setup.InitStep;
 import com.bxdlove.worktimeserver.startup.setup.SetupException;
 import org.bson.Document;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Properties;
 
+import static com.bxdlove.worktimeserver.io.ApplicationDirectories.ADMIN_CONFIG_FILE;
 import static com.bxdlove.worktimeserver.io.ApplicationDirectories.APPLICATION_HOME;
 
 @WebListener(value = "Application startup")
@@ -47,6 +50,38 @@ public class ApplicationStartup implements ServletContextListener {
                         status.addException(new SetupException(this, e.getMessage()));
                     }
                 }
+
+                @Override
+                public boolean isSatisfied() {
+                    return Files.exists(APPLICATION_HOME.getPath());
+                }
+            },
+            new InitStep() {
+                @Override
+                public String name() {
+                    return "Admin configuration file creation";
+                }
+
+                @Override
+                public String description() {
+                    return "Creates the admin config file";
+                }
+
+                @Override
+                public void execute() {
+                    Properties prop = new Properties();
+                    prop.setProperty("admin-password", "123465");
+                    try (FileWriter fileWriter = new FileWriter(ADMIN_CONFIG_FILE.getPath().toFile())) {
+                        prop.store(fileWriter, "application setup");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                @Override
+                public boolean isSatisfied() {
+                    return Files.exists(ADMIN_CONFIG_FILE.getPath());
+                }
             }
     );
 
@@ -67,25 +102,33 @@ public class ApplicationStartup implements ServletContextListener {
 
                 @Override
                 public void execute() {
+                    status.addException(new SetupException(this, "database connection failed"));
+                }
+
+                @Override
+                public boolean isSatisfied() {
                     try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
                         MongoDatabase database = mongoClient.getDatabase("admin");
                         database.runCommand(new Document("ping", 1));
+                        return true;
                     } catch (Exception e) {
-                        status.addException(new SetupException(this, e.getMessage()));
+                        return false;
                     }
                 }
             }
     );
 
     public void init() {
-        if (!Files.exists(APPLICATION_HOME.getPath())) {
-            for (InitStep initStep : initSteps) {
+        for (InitStep initStep : initSteps) {
+            if (!initStep.isSatisfied()) {
                 initStep.execute();
             }
         }
 
         for (InitStep preFlightCheck : preFlightChecks) {
-            preFlightCheck.execute();
+            if (!preFlightCheck.isSatisfied()) {
+                preFlightCheck.execute();
+            }
         }
 
         if (status.getExceptionCount() == 0) {
