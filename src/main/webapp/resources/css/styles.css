@@ -32,6 +32,7 @@ body {
     padding: 1rem;
     margin-bottom: 2rem;
     border-bottom: 3px solid #1abc9c;
+    position: relative;
 }
 
 .header h1 {
@@ -174,6 +175,55 @@ body {
 
 .ui-message-error {
     color: #dc3545;
+}
+
+/* Login form styling */
+.login-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .p-field {
+    margin-bottom: 15px;
+}
+
+.login-form .p-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.login-form .p-field input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-form .p-field .ui-button {
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* User actions (logout button) */
+.user-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.ui-button-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.ui-button-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
 }
 
 /* Responsive design */
