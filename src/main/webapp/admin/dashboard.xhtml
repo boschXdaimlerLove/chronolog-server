@@ -11,6 +11,11 @@
     <div class="container">
         <div class="header">
             <h1>ChronoLog Administrator Panel</h1>
+            <div class="user-actions">
+                <h:form>
+                    <p:commandButton value="Logout" action="#{adminLoginBean.logout}" icon="pi pi-sign-out" styleClass="ui-button-danger" />
+                </h:form>
+            </div>
         </div>
 
         <div class="content">
