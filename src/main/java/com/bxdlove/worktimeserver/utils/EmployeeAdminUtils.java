@@ -33,7 +33,8 @@ public class EmployeeAdminUtils {
                             entry.get("first_name", String.class),
                             entry.get("password", String.class),
                             entry.get("second_name", String.class),
-                            entry.get("weekly_hours", Integer.class))));
+                            entry.get("weekly_hours", Integer.class),
+                            entry.get("admin", Boolean.class))));
         }
 
         return employees;
@@ -51,7 +52,8 @@ public class EmployeeAdminUtils {
                 .append("first_name", employee.getFirstName())
                 .append("second_name", employee.getSecondName())
                 .append("password", employee.getPassword())
-                .append("weekly_hours", employee.getWeeklyHours());
+                .append("weekly_hours", employee.getWeeklyHours())
+                .append("admin", employee.isAdmin());
 
         try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
             mongoClient.getDatabase("worktime_server")
