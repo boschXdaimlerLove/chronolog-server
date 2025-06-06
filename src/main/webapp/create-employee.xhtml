@@ -65,6 +65,12 @@
                             <p:message for="passwordPicker" />
                         </div>
 
+                        <div class="field">
+                            <p:outputLabel for="adminCheckbox">User is administrator:</p:outputLabel>
+                            <p:selectBooleanCheckbox id="adminCheckbox" value="#{createEmployeeBean.employee.admin}"
+                                                     required="true" />
+                        </div>
+
                         <div class="button-container">
                             <p:commandButton value="Cancel" action="dashboard?faces-redirect=true" immediate="true" 
                                            icon="pi pi-times" styleClass="ui-button-secondary"/>

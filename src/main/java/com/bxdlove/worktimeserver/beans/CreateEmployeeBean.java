@@ -23,6 +23,7 @@ public class CreateEmployeeBean {
     public void createEmployee() {
         EmployeeAdminUtils.createEmployee(employee);
         employeeDataBean.getEmployees().add(employee);
+        employee = new Employee();
     }
 
     public Employee getEmployee() {
