@@ -206,7 +206,7 @@ public class Time {
             Document lastStampEntry = getLastStampEntry(mongoClient, securityContext.getUserPrincipal().getName());
 
             if (lastStampEntry == null) {
-                return Response.ok(TimeStatusCode.OK).build();
+                return Response.ok(TimeStatusCode.OK.getReturnCode()).build();
             }
 
             if (!isCoreWorkingHours(localStampInDateTime.toLocalTime())) {
