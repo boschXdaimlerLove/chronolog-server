@@ -29,10 +29,13 @@ public class Employee {
     @JsonbProperty("weekly-hours")
     private int weeklyHours;
 
+    @JsonbProperty("admin")
+    private boolean admin;
+
     public Employee() {
     }
 
-    public Employee(String id, Date birthday, String email, String firstName, String password, String secondName, int weeklyHours) {
+    public Employee(String id, Date birthday, String email, String firstName, String password, String secondName, int weeklyHours, boolean admin) {
         this.id = id;
         this.birthday = birthday;
         this.email = email;
@@ -40,6 +43,7 @@ public class Employee {
         this.password = password;
         this.secondName = secondName;
         this.weeklyHours = weeklyHours;
+        this.admin = admin;
     }
 
     public String getId() {
@@ -96,5 +100,13 @@ public class Employee {
 
     public void setWeeklyHours(int weeklyHours) {
         this.weeklyHours = weeklyHours;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }
