@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
     <title>Create Employee</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -66,14 +67,15 @@
                             <p:outputLabel for="passwordPicker">Password:</p:outputLabel>
                             <p:password id="passwordPicker" feedback="true" required="true" toggleMask="true"
                                       promptLabel="Please enter a password"
-                                      value="#{createEmployeeBean.employee.password}"/>
+                                      value="#{createEmployeeBean.employee.password}">
+                                <f:validateLength minimum="12"/>
+                            </p:password>
                             <p:message for="passwordPicker" />
                         </div>
 
                         <div class="field">
                             <p:outputLabel for="adminCheckbox">User is administrator:</p:outputLabel>
-                            <p:selectBooleanCheckbox id="adminCheckbox" value="#{createEmployeeBean.employee.admin}"
-                                                     required="true" />
+                            <p:selectBooleanCheckbox id="adminCheckbox" value="#{createEmployeeBean.employee.admin}"/>
                         </div>
 
                         <div class="button-container">

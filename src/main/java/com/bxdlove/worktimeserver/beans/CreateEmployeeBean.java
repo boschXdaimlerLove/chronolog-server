@@ -1,5 +1,6 @@
 package com.bxdlove.worktimeserver.beans;
 
+import com.bxdlove.worktimeserver.api.security.PasswordValidator;
 import com.bxdlove.worktimeserver.base.Employee;
 import com.bxdlove.worktimeserver.utils.EmployeeAdminUtils;
 import jakarta.annotation.PostConstruct;
@@ -21,6 +22,10 @@ public class CreateEmployeeBean {
     }
 
     public void createEmployee() {
+        if (!PasswordValidator.validatePassword(employee.getPassword())) {
+            return;
+        }
+
         EmployeeAdminUtils.createEmployee(employee);
         employeeDataBean.getEmployees().add(employee);
         employee = new Employee();
