@@ -13,12 +13,12 @@ public enum ApplicationDirectories {
     /**
      * application home: {@code userhome/.worktimeserver}
      */
-    APPLICATION_HOME(Path.of("")),
+    APPLICATION_HOME(Path.of("/opt/jboss/wildfly/standalone/data/worktime-server")),
 
     /**
      * admin config file: {@code userhome/.worktimeserver/.admin-config}
      */
-    ADMIN_CONFIG_FILE(Path.of(".admin-config"));
+    ADMIN_CONFIG_FILE(APPLICATION_HOME.path.resolve(".admin-config"));
 
     private final Path path;
 

@@ -23,7 +23,7 @@ public class EmployeeAdminUtils {
     public static List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
 
-        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             mongoClient.getDatabase("worktime_server")
                     .getCollection("employee")
                     .find()
@@ -55,7 +55,7 @@ public class EmployeeAdminUtils {
                 .append("weekly_hours", employee.getWeeklyHours())
                 .append("admin", employee.isAdmin());
 
-        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             mongoClient.getDatabase("worktime_server")
                     .getCollection("employee")
                     .insertOne(document);

@@ -42,6 +42,7 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.5.0</version>
+            <!--hotfix: <version>4.11.5</version> und mvn clean -->
         </dependency>
         <!-- Validation -->
         <dependency>

@@ -32,7 +32,7 @@ public class UserSettings {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             mongoClient.getDatabase("worktime_server").getCollection("employee")
                     .updateOne(
                             Filters.eq("email", securityContext.getUserPrincipal().getName()),

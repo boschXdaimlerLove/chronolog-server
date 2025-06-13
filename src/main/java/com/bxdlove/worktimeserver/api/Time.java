@@ -52,7 +52,7 @@ public class Time {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        try (MongoClient mongoclient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoclient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             if (userAlreadyCheckedIn(mongoclient, securityContext.getUserPrincipal().getName())) {
                 return ResponseMessages.ALREADY_CHECKED_IN.getResponseBuilder().build();
             }
@@ -92,7 +92,7 @@ public class Time {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        try (MongoClient mongoclient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoclient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             Document userTimeStampEntry = getCurrentUserTimestampEntry(mongoclient, securityContext.getUserPrincipal().getName());
             if (userTimeStampEntry == null) {
                 return ResponseMessages.NO_ACTIVE_TIME_FRAME.getResponseBuilder().build();
@@ -132,7 +132,7 @@ public class Time {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        try (MongoClient mongoclient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoclient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             for (TimeObject timeObject : timeObjects) {
                 mongoclient.getDatabase("worktime_server").getCollection("time_frame").insertOne(
                         new Document("employee_mail", securityContext.getUserPrincipal().getName())
@@ -168,7 +168,7 @@ public class Time {
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 
-        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             mongoClient.getDatabase("worktime_server").getCollection("time_frame").find(
                     Filters.eq("employee_mail", securityContext.getUserPrincipal().getName())
             ).forEach(document -> arrayBuilder.add(Json.createObjectBuilder()
@@ -191,7 +191,7 @@ public class Time {
             return ResponseMessages.UNAUTHORIZED.getResponseBuilder().build();
         }
 
-        try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
             Document userTimeStampEntry = getCurrentUserTimestampEntry(mongoClient, securityContext.getUserPrincipal().getName());
             if (userTimeStampEntry == null) {
                 return Response.ok(TimeStatusCode.NOT_LOGGED_IN.getReturnCode()).build();

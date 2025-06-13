@@ -22,9 +22,9 @@ public class CreateEmployeeBean {
     }
 
     public void createEmployee() {
-        if (!PasswordValidator.validatePassword(employee.getPassword())) {
-            return;
-        }
+        //if (!PasswordValidator.validatePassword(employee.getPassword())) {
+        //    return;
+        //}
 
         EmployeeAdminUtils.createEmployee(employee);
         employeeDataBean.getEmployees().add(employee);

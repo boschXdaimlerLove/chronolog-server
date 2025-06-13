@@ -3,6 +3,7 @@ package com.bxdlove.worktimeserver.startup;
 import com.bxdlove.worktimeserver.api.Status;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContextEvent;
@@ -82,6 +83,33 @@ public class ApplicationStartup implements ServletContextListener {
                 public boolean isSatisfied() {
                     return Files.exists(ADMIN_CONFIG_FILE.getPath());
                 }
+            },
+            new InitStep() {
+                @Inject
+                private Status status;
+
+                @Override
+                public String name() {
+                    return "MongoDB database creation";
+                }
+
+                @Override
+                public String description() {
+                    return "Creates the application database";
+                }
+
+                @Override
+                public void execute() {}
+
+                @Override
+                public boolean isSatisfied() {
+                    try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
+                        mongoClient.getDatabase("worktime_server");
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
             }
     );
 
@@ -107,7 +135,7 @@ public class ApplicationStartup implements ServletContextListener {
 
                 @Override
                 public boolean isSatisfied() {
-                    try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+                    try (MongoClient mongoClient = MongoClients.create("mongodb://worktime-mongodb:27017")) {
                         MongoDatabase database = mongoClient.getDatabase("admin");
                         database.runCommand(new Document("ping", 1));
                         return true;
